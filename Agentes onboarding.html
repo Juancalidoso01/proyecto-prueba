@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2D5BFF">
+    <title>Onboarding Empresarial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Paso de inicio de sesión -->
+    <div class="login-step" id="login-step">
+        <div class="step-header">
+            <h1>Bienvenido al Onboarding</h1>
+            <p>Selecciona cómo deseas iniciar el registro de tu empresa</p>
+        </div>
+        
+        <div class="login-options">
+            <button class="social-signin google-signin" id="google-login">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo">
+                <span>Continuar con Google</span>
+            </button>
+
+            <button class="social-signin apple-signin" id="apple-login">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple logo">
+                <span>Continuar con Apple</span>
+            </button>
+
+            <div class="divider">
+                <span>o</span>
+            </div>
+
+            <button class="manual-signin" id="manual-login">
+                <span>Registro manual</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="onboarding-container" style="display:none;">
+        <!-- Barra de progreso -->
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- Indicador de pasos -->
+        <div class="steps-indicator">
+            <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Rol</div>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Datos personales</div>
+            </div>
+            <div class="step-indicator employee-only" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Representante legal</div>
+            </div>
+            <div class="step-indicator employee-only" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-label">Verificación</div>
+            </div>
+            <div class="step-indicator" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-label">Documentos</div>
+            </div>
+        </div>
+
+        <!-- Paso 1: Selección de Rol -->
+        <div class="step active" id="step1">
+            <div class="step-header">
+                <h2>¿Cuál es tu rol en la empresa?</h2>
+                <p>Selecciona tu rol para continuar con el registro</p>
+            </div>
+            
+            <div class="role-selection">
+                <div class="role-option" data-role="legal">
+                    <input type="radio" name="role" id="role-legal" value="legal">
+                    <label for="role-legal">
+                        <h3>Representante Legal</h3>
+                        <p>Soy el representante legal de la empresa</p>
+                    </label>
+                </div>
+                
+                <div class="role-option" data-role="employee">
+                    <input type="radio" name="role" id="role-employee" value="employee">
+                    <label for="role-employee">
+                        <h3>Colaborador</h3>
+                        <p>Soy empleado o colaborador de la empresa</p>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso de verificación telefónica -->
+        <div class="step" id="step2">
+            <div class="step-header">
+                <h2>Verificación de teléfono</h2>
+                <p>Ingresa y verifica tu número de teléfono</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Número de teléfono</label>
+                <input type="tel" id="phone" class="form-control" placeholder="Ej: 5551234567" required>
+                <button type="button" class="btn btn-primary" id="send-code-btn">Enviar código</button>
+            </div>
+
+            <div id="verification-code-group" style="display: none;">
+                <label>Código de verificación</label>
+                <div class="verification-code">
+                    <input type="text" class="verification-digit" maxlength="1" aria-label="Primer dígito">
+                    <input type="text" class="verification-digit" maxlength="1" aria-label="Segundo dígito">
+                    <input type="text" class="verification-digit" maxlength="1" aria-label="Tercer dígito">
+                    <input type="text" class="verification-digit" maxlength="1" aria-label="Cuarto dígito">
+                </div>
+                <div id="resend-code" class="resend-code">Reenviar código</div>
+                <div id="test-otp" style="color: #666; margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Datos del colaborador o representante -->
+        <div class="step" id="step3">
+            <div class="step-header">
+                <h2>Información personal</h2>
+                <p>Ingresa tus datos para continuar</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="first-name">Nombre</label>
+                <input type="text" id="first-name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="last-name">Apellidos</label>
+                <input type="text" id="last-name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+
+            <!-- Solo visible si es colaborador -->
+            <div class="form-group employee-only">
+                <label for="position">Cargo en la empresa</label>
+                <select id="position" class="form-control" required>
+                    <option value="">Selecciona tu cargo</option>
+                    <option value="manager">Gerente</option>
+                    <option value="director">Director</option>
+                    <option value="coordinator">Coordinador</option>
+                    <option value="administrative">Administrativo</option>
+                    <option value="other">Otro</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Paso 4: Datos del representante legal (solo para empleados) -->
+        <div class="step" id="step4">
+            <div class="step-header">
+                <h2>Datos del Representante Legal</h2>
+                <p>Ingresa la información del representante legal de la empresa</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="legal-rep-name">Nombre completo</label>
+                <input type="text" id="legal-rep-name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="legal-rep-email">Correo electrónico</label>
+                <input type="email" id="legal-rep-email" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="legal-rep-phone">Teléfono</label>
+                <input type="tel" id="legal-rep-phone" class="form-control" required>
+                <button type="button" class="btn btn-primary" id="legal-rep-send-code-btn">Verificar teléfono</button>
+            </div>
+
+            <div id="legal-rep-verification-code-group" style="display: none;">
+                <label>Código de verificación</label>
+                <div class="verification-code">
+                    <input type="text" class="legal-rep-verification-digit" maxlength="1" aria-label="Primer dígito">
+                    <input type="text" class="legal-rep-verification-digit" maxlength="1" aria-label="Segundo dígito">
+                    <input type="text" class="legal-rep-verification-digit" maxlength="1" aria-label="Tercer dígito">
+                    <input type="text" class="legal-rep-verification-digit" maxlength="1" aria-label="Cuarto dígito">
+                </div>
+                <div id="legal-rep-resend-code" class="resend-code">Reenviar código</div>
+                <div id="legal-rep-test-otp" style="color: #666; margin-top: 10px;"></div>
+            </div>
+
+            <div class="form-group">
+                <h3>Verificación de identidad del Representante Legal</h3>
+                <p>El representante legal debe completar la verificación de identidad.</p>
+                <a href="https://signup.metamap.com/?merchantToken=612566a0a0be80001b035915&flowId=6830ed2c21ee36001c29640c" 
+                   target="_blank" 
+                   class="btn btn-secondary"
+                   id="kyc-link">
+                    Iniciar verificación
+                </a>
+                <div class="kyc-status" id="kyc-status">
+                    <span class="status-icon">⚠️</span>
+                    <span class="status-text">Pendiente de verificación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 5: Documentos de la empresa -->
+        <div class="step" id="step5">
+            <div class="step-header">
+                <h2>Documentos de la empresa</h2>
+                <p>Sube los documentos requeridos para completar el registro</p>
+            </div>
+
+            <div class="document-upload-container">
+                <div class="upload-box" id="business-registration-box">
+                    <div class="upload-icon">📄</div>
+                    <label for="business-registration">Aviso de Operaciones</label>
+                    <input type="file" id="business-registration" accept=".pdf,.jpg,.png" required>
+                    <small class="help-text">PDF, JPG o PNG (máx. 5MB)</small>
+                    <div class="upload-status"></div>
+                </div>
+
+                <div class="upload-box" id="tax-document-box">
+                    <div class="upload-icon">📄</div>
+                    <label for="tax-document">RUC</label>
+                    <input type="file" id="tax-document" accept=".pdf,.jpg,.png" required>
+                    <small class="help-text">PDF, JPG o PNG (máx. 5MB)</small>
+                    <div class="upload-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer con navegación -->
+        <div class="footer">
+            <button type="button" class="btn btn-outline" id="prevBtn" disabled>Anterior</button>
+            <button type="button" class="btn btn-primary" id="nextBtn">Siguiente</button>
+        </div>
+    </div>
+
+    <script>
+        function initSocialSignIn() {
+            // Google Sign In
+            const googleLogin = document.getElementById('google-login');
+            googleLogin.addEventListener('click', function() {
+                // Aquí iría la implementación real de Google Sign In
+                initializeGoogleSignIn();
+            });
+
+            // Apple Sign In
+            const appleLogin = document.getElementById('apple-login');
+            appleLogin.addEventListener('click', function() {
+                // Aquí iría la implementación real de Apple Sign In
+                initializeAppleSignIn();
+            });
+
+            // Manual Sign In
+            const manualLogin = document.getElementById('manual-login');
+            manualLogin.addEventListener('click', function() {
+                showOnboarding();
+            });
+        }
+
+        function initializeGoogleSignIn() {
+            // Aquí iría la configuración real de Google Sign In
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: 'TU_CLIENT_ID.apps.googleusercontent.com'
+                }).then(function(auth2) {
+                    auth2.signIn().then(function(googleUser) {
+                        const profile = googleUser.getBasicProfile();
+                        // Prellenar datos del formulario
+                        prefillFormData({
+                            firstName: profile.getGivenName(),
+                            lastName: profile.getFamilyName(),
+                            email: profile.getEmail()
+                        });
+                        showOnboarding();
+                    });
+                });
+            });
+        }
+
+        function initializeAppleSignIn() {
+            // Aquí iría la configuración real de Apple Sign In
+            AppleID.auth.init({
+                clientId: 'tu.apple.client.id',
+                scope: 'name email',
+                redirectURI: 'https://tu-dominio.com/callback'
+            });
+            
+            AppleID.auth.signIn().then(function(response) {
+                // Prellenar datos del formulario
+                prefillFormData({
+                    firstName: response.user.name.firstName,
+                    lastName: response.user.name.lastName,
+                    email: response.user.email
+                });
+                showOnboarding();
+            });
+        }
+
+        function prefillFormData(data) {
+            if (data.firstName) {
+                document.getElementById('first-name').value = data.firstName;
+            }
+            if (data.lastName) {
+                document.getElementById('last-name').value = data.lastName;
+            }
+            if (data.email) {
+                document.getElementById('email').value = data.email;
+            }
+        }
+
+        function showOnboarding() {
+            const loginStep = document.getElementById('login-step');
+            const onboardingContainer = document.querySelector('.onboarding-container');
+            
+            loginStep.style.opacity = '0';
+            setTimeout(() => {
+                loginStep.style.display = 'none';
+                onboardingContainer.style.display = 'block';
+                setTimeout(() => {
+                    onboardingContainer.style.opacity = '1';
+                }, 50);
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = document.querySelectorAll('.step');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progress = document.getElementById('progress');
+            let currentStep = 0;
+            let isLegalRepresentative = false;
+            let phoneVerified = false;
+            let kycVerified = false;
+            let legalRepPhoneVerified = false;
+            let legalRepOTP = null;
+            
+            const roleOptions = document.querySelectorAll('.role-option');
+            
+            // Manejo de selección de rol
+            roleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    isLegalRepresentative = this.dataset.role === 'legal';
+                    roleOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Actualizar la visibilidad de los pasos según el rol
+                    const steps = document.querySelectorAll('.step');
+                    if (isLegalRepresentative) {
+                        document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                            indicator.style.display = (index === 3 || index === 4) ? 'none' : 'flex';
+                        });
+                    } else {
+                        document.querySelectorAll('.step-indicator').forEach(indicator => {
+                            indicator.style.display = 'flex';
+                        });
+                    }
+                });
+            });
+
+            // Manejo de verificación KYC
+            document.getElementById('kyc-link').addEventListener('click', function(e) {
+                // Marcar que el usuario ha iniciado el proceso de KYC
+                localStorage.setItem('kyc-started', 'true');
+                
+                // Actualizar el estado visual
+                document.getElementById('kyc-status').innerHTML = `
+                    <span class="status-icon">🔄</span>
+                    <span class="status-text">Verificación en proceso...</span>
+                `;
+            });
+
+            // Verificar si el KYC fue completado al regresar del proceso
+            window.addEventListener('focus', function() {
+                if (localStorage.getItem('kyc-started') === 'true') {
+                    // Simular verificación completada (en producción, verificar con el backend)
+                    kycVerified = true;
+                    document.getElementById('kyc-status').innerHTML = `
+                        <span class="status-icon">✅</span>
+                        <span class="status-text">Verificación completada</span>
+                    `;
+                    localStorage.removeItem('kyc-started');
+                }
+            });
+
+            function showStep(stepIndex) {
+                // Si es representante legal, ajustar el flujo
+                if (isLegalRepresentative) {
+                    switch(stepIndex) {
+                        case 1: // Saltar verificación de teléfono inicial
+                            stepIndex = 2;
+                            break;
+                        case 3: // Saltar datos del representante legal
+                            stepIndex = 5;
+                            break;
+                        case 4: // Saltar verificación del representante legal
+                            stepIndex = 5;
+                            break;
+                    }
+                } else {
+                    // Si es colaborador, mantener el flujo normal
+                    if (stepIndex > steps.length - 1) {
+                        stepIndex = steps.length - 1;
+                    }
+                }
+                
+                steps.forEach(step => {
+                    step.classList.remove('active');
+                    step.style.display = 'none';
+                    step.style.opacity = '0';
+                });
+                
+                if (steps[stepIndex]) {
+                    steps[stepIndex].classList.add('active');
+                    steps[stepIndex].style.display = 'block';
+                    steps[stepIndex].offsetHeight; // Force reflow
+                    steps[stepIndex].style.opacity = '1';
+                    
+                    // Mostrar/ocultar campos específicos según el rol
+                    const employeeOnlyFields = document.querySelectorAll('.employee-only');
+                    employeeOnlyFields.forEach(field => {
+                        field.style.display = isLegalRepresentative ? 'none' : 'block';
+                    });
+                }
+                
+                currentStep = stepIndex;
+                updateButtonsAndProgress();
+            }
+
+            function updateButtonsAndProgress() {
+                // Actualizar botones
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.textContent = currentStep === (isLegalRepresentative ? 3 : 5) ? 'Finalizar' : 'Siguiente';
+                
+                // Actualizar indicadores de paso
+                document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                    if (isLegalRepresentative) {
+                        // Ajustar la visualización de pasos para representante legal
+                        const adjustedIndex = index > 2 ? index - 2 : index;
+                        indicator.style.display = index === 3 || index === 4 ? 'none' : 'flex';
+                        if (adjustedIndex < currentStep) {
+                            indicator.classList.add('completed');
+                            indicator.classList.remove('active');
+                        } else if (adjustedIndex === currentStep) {
+                            indicator.classList.add('active');
+                            indicator.classList.remove('completed');
+                        } else {
+                            indicator.classList.remove('completed', 'active');
+                        }
+                    } else {
+                        indicator.style.display = 'flex';
+                        if (index < currentStep) {
+                            indicator.classList.add('completed');
+                            indicator.classList.remove('active');
+                        } else if (index === currentStep) {
+                            indicator.classList.add('active');
+                            indicator.classList.remove('completed');
+                        } else {
+                            indicator.classList.remove('completed', 'active');
+                        }
+                    }
+                });
+                
+                // Actualizar barra de progreso
+                const totalSteps = isLegalRepresentative ? 3 : 5;
+                const progressWidth = ((currentStep + 1) / totalSteps) * 100;
+                progress.style.width = `${progressWidth}%`;
+            }
+            
+            // Función para validar el número de teléfono
+            function validatePhone(phone) {
+                return /^\d{10}$/.test(phone); // Valida que sean 10 dígitos
+            }
+
+            // Función para enviar el código OTP
+            function sendOTP(phoneNumber) {
+                // Simular envío de OTP
+                const otp = Math.floor(1000 + Math.random() * 9000);
+                console.log(`Código OTP para ${phoneNumber}: ${otp}`); // Solo para pruebas
+                document.getElementById('test-otp').textContent = `Código de prueba: ${otp}`; // Solo para pruebas
+                return otp;
+            }
+
+            // Actualizar la validación de pasos
+            function validateStep(stepIndex) {
+                let isValid = true;
+                
+                switch(stepIndex) {
+                    case 0: // Selección de rol
+                        const selectedRole = document.querySelector('input[name="role"]:checked');
+                        if (!selectedRole) {
+                            alert('Por favor, selecciona un rol');
+                            isValid = false;
+                        }
+                        break;
+                    
+                    case 3: // Datos personales
+                        const firstName = document.getElementById('first-name').value;
+                        const lastName = document.getElementById('last-name').value;
+                        const email = document.getElementById('email').value;
+                        
+                        if (!firstName || !lastName || !email) {
+                            alert('Por favor, completa todos los campos');
+                            isValid = false;
+                        }
+
+                        if (!isLegalRepresentative) {
+                            const position = document.getElementById('position').value;
+                            if (!position) {
+                                alert('Por favor, selecciona tu cargo en la empresa');
+                                isValid = false;
+                            }
+                        }
+                        break;
+                    
+                    case 4: // Datos del representante legal (solo para empleados)
+                        if (!isLegalRepresentative) {
+                            const legalRepName = document.getElementById('legal-rep-name').value;
+                            const legalRepEmail = document.getElementById('legal-rep-email').value;
+                            const legalRepPhone = document.getElementById('legal-rep-phone').value;
+                            
+                            if (!legalRepName || !legalRepEmail || !legalRepPhone) {
+                                alert('Por favor, completa todos los datos del representante legal');
+                                isValid = false;
+                                break;
+                            }
+                            
+                            // Verificar primero si el número está validado por OTP
+                            if (!legalRepPhoneVerified) {
+                                alert('Por favor, verifica el número del representante legal antes de continuar');
+                                isValid = false;
+                                break;
+                            }
+                            
+                            // Solo verificar KYC si el teléfono ya está verificado
+                            if (!kycVerified) {
+                                alert('El representante legal debe completar la verificación de identidad');
+                                isValid = false;
+                            }
+                        }
+                        break;
+                    
+                    case 5: // Documentos de la empresa
+                        const businessReg = document.getElementById('business-registration').files[0];
+                        const taxDoc = document.getElementById('tax-document').files[0];
+                        
+                        if (!businessReg || !taxDoc) {
+                            alert('Por favor, sube todos los documentos requeridos');
+                            isValid = false;
+                        }
+                        break;
+                }
+                
+                return isValid;
+            }
+
+            // Manejo del botón "Enviar código"
+            document.getElementById('send-code-btn').addEventListener('click', function() {
+                const phone = document.getElementById('phone').value;
+                if (validatePhone(phone)) {
+                    const otp = sendOTP(phone);
+                    document.getElementById('verification-code-group').style.display = 'block';
+                    this.style.display = 'none';
+                } else {
+                    alert('Por favor, ingresa un número de teléfono válido');
+                }
+            });
+
+            // Manejo de la entrada del código OTP
+            document.querySelectorAll('.verification-digit').forEach((digit, index, digits) => {
+                digit.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        if (index < digits.length - 1) {
+                            digits[index + 1].focus();
+                        }
+                    }
+                });
+
+                digit.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                });
+            });
+
+            // Manejo del botón "Siguiente"
+            nextBtn.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    if (currentStep < steps.length - 1) {
+                        showStep(currentStep + 1);
+                    } else {
+                        alert('¡Registro completado con éxito!');
+                    }
+                }
+            });
+
+            // Manejo del botón "Anterior"
+            prevBtn.addEventListener('click', function() {
+                if (currentStep > 0) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // Función para mostrar el paso actual
+            function showStep(stepIndex) {
+                // Si es representante legal, ajustar el flujo
+                if (isLegalRepresentative) {
+                    switch(stepIndex) {
+                        case 1: // Saltar verificación de teléfono inicial
+                            stepIndex = 2;
+                            break;
+                        case 3: // Saltar datos del representante legal
+                            stepIndex = 5;
+                            break;
+                        case 4: // Saltar verificación del representante legal
+                            stepIndex = 5;
+                            break;
+                    }
+                } else {
+                    // Si es colaborador, mantener el flujo normal
+                    if (stepIndex > steps.length - 1) {
+                        stepIndex = steps.length - 1;
+                    }
+                }
+                
+                steps.forEach(step => {
+                    step.classList.remove('active');
+                    step.style.display = 'none';
+                    step.style.opacity = '0';
+                });
+                
+                if (steps[stepIndex]) {
+                    steps[stepIndex].classList.add('active');
+                    steps[stepIndex].style.display = 'block';
+                    steps[stepIndex].offsetHeight; // Force reflow
+                    steps[stepIndex].style.opacity = '1';
+                    
+                    // Mostrar/ocultar campos específicos según el rol
+                    const employeeOnlyFields = document.querySelectorAll('.employee-only');
+                    employeeOnlyFields.forEach(field => {
+                        field.style.display = isLegalRepresentative ? 'none' : 'block';
+                    });
+                }
+                
+                currentStep = stepIndex;
+                updateButtonsAndProgress();
+            }
+
+            function updateButtonsAndProgress() {
+                // Actualizar botones
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.textContent = currentStep === (isLegalRepresentative ? 3 : 5) ? 'Finalizar' : 'Siguiente';
+                
+                // Actualizar indicadores de paso
+                document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                    if (isLegalRepresentative) {
+                        // Ajustar la visualización de pasos para representante legal
+                        const adjustedIndex = index > 2 ? index - 2 : index;
+                        indicator.style.display = index === 3 || index === 4 ? 'none' : 'flex';
+                        if (adjustedIndex < currentStep) {
+                            indicator.classList.add('completed');
+                            indicator.classList.remove('active');
+                        } else if (adjustedIndex === currentStep) {
+                            indicator.classList.add('active');
+                            indicator.classList.remove('completed');
+                        } else {
+                            indicator.classList.remove('completed', 'active');
+                        }
+                    } else {
+                        indicator.style.display = 'flex';
+                        if (index < currentStep) {
+                            indicator.classList.add('completed');
+                            indicator.classList.remove('active');
+                        } else if (index === currentStep) {
+                            indicator.classList.add('active');
+                            indicator.classList.remove('completed');
+                        } else {
+                            indicator.classList.remove('completed', 'active');
+                        }
+                    }
+                });
+                
+                // Actualizar barra de progreso
+                const totalSteps = isLegalRepresentative ? 3 : 5;
+                const progressWidth = ((currentStep + 1) / totalSteps) * 100;
+                progress.style.width = `${progressWidth}%`;
+            }
+            
+            // Función para validar el número de teléfono
+            function validatePhone(phone) {
+                return /^\d{10}$/.test(phone); // Valida que sean 10 dígitos
+            }
+
+            // Función para enviar el código OTP
+            function sendOTP(phoneNumber) {
+                // Simular envío de OTP
+                const otp = Math.floor(1000 + Math.random() * 9000);
+                console.log(`Código OTP para ${phoneNumber}: ${otp}`); // Solo para pruebas
+                document.getElementById('test-otp').textContent = `Código de prueba: ${otp}`; // Solo para pruebas
+                return otp;
+            }
+
+            // Actualizar la validación de pasos
+            function validateStep(stepIndex) {
+                let isValid = true;
+                
+                switch(stepIndex) {
+                    case 0: // Selección de rol
+                        const selectedRole = document.querySelector('input[name="role"]:checked');
+                        if (!selectedRole) {
+                            alert('Por favor, selecciona un rol');
+                            isValid = false;
+                        }
+                        break;
+                    
+                    case 3: // Datos personales
+                        const firstName = document.getElementById('first-name').value;
+                        const lastName = document.getElementById('last-name').value;
+                        const email = document.getElementById('email').value;
+                        
+                        if (!firstName || !lastName || !email) {
+                            alert('Por favor, completa todos los campos');
+                            isValid = false;
+                        }
+
+                        if (!isLegalRepresentative) {
+                            const position = document.getElementById('position').value;
+                            if (!position) {
+                                alert('Por favor, selecciona tu cargo en la empresa');
+                                isValid = false;
+                            }
+                        }
+                        break;
+                    
+                    case 4: // Datos del representante legal (solo para empleados)
+                        if (!isLegalRepresentative) {
+                            const legalRepName = document.getElementById('legal-rep-name').value;
+                            const legalRepEmail = document.getElementById('legal-rep-email').value;
+                            const legalRepPhone = document.getElementById('legal-rep-phone').value;
+                            
+                            if (!legalRepName || !legalRepEmail || !legalRepPhone) {
+                                alert('Por favor, completa todos los datos del representante legal');
+                                isValid = false;
+                                break;
+                            }
+                            
+                            // Verificar primero si el número está validado por OTP
+                            if (!legalRepPhoneVerified) {
+                                alert('Por favor, verifica el número del representante legal antes de continuar');
+                                isValid = false;
+                                break;
+                            }
+                            
+                            // Solo verificar KYC si el teléfono ya está verificado
+                            if (!kycVerified) {
+                                alert('El representante legal debe completar la verificación de identidad');
+                                isValid = false;
+                            }
+                        }
+                        break;
+                    
+                    case 5: // Documentos de la empresa
+                        const businessReg = document.getElementById('business-registration').files[0];
+                        const taxDoc = document.getElementById('tax-document').files[0];
+                        
+                        if (!businessReg || !taxDoc) {
+                            alert('Por favor, sube todos los documentos requeridos');
+                            isValid = false;
+                        }
+                        break;
+                }
+                
+                return isValid;
+            }
+
+            // Manejo del botón "Enviar código"
+            document.getElementById('send-code-btn').addEventListener('click', function() {
+                const phone = document.getElementById('phone').value;
+                if (validatePhone(phone)) {
+                    const otp = sendOTP(phone);
+                    document.getElementById('verification-code-group').style.display = 'block';
+                    this.style.display = 'none';
+                } else {
+                    alert('Por favor, ingresa un número de teléfono válido');
+                }
+            });
+
+            // Manejo de la entrada del código OTP
+            document.querySelectorAll('.verification-digit').forEach((digit, index, digits) => {
+                digit.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        if (index < digits.length - 1) {
+                            digits[index + 1].focus();
+                        }
+                    }
+                });
+
+                digit.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                });
+            });
+
+            // Manejo del botón "Siguiente"
+            nextBtn.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    if (currentStep < steps.length - 1) {
+                        showStep(currentStep + 1);
+                    } else {
+                        alert('¡Registro completado con éxito!');
+                    }
+                }
+            });
+
+            // Manejo del botón "Anterior"
+            prevBtn.addEventListener('click', function() {
+                if (currentStep > 0) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // Add to your existing JavaScript
+            function handleFileUpload(fileInput, statusDiv) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    
+                    if (file) {
+                        if (file.size > maxSize) {
+                            statusDiv.innerHTML = `<span class="error">❌ El archivo excede 5MB</span>`;
+                            fileInput.value = '';
+                            return;
+                        }
+                        
+                        statusDiv.innerHTML = `<span class="success">✅ ${file.name}</span>`;
+                        fileInput.closest('.upload-box').classList.add('uploaded');
+                    }
+                });
+            }
+
+            // Initialize file upload handlers
+            document.addEventListener('DOMContentLoaded', function() {
+                const businessRegistration = document.getElementById('business-registration');
+                const taxDocument = document.getElementById('tax-document');
+                
+                handleFileUpload(
+                    businessRegistration, 
+                    document.querySelector('#business-registration-box .upload-status')
+                );
+                handleFileUpload(
+                    taxDocument, 
+                    document.querySelector('#tax-document-box .upload-status')
+                );
+            });
+
+            // Inicialización
+            showStep(0);
+            initSocialSignIn();
+
+            // Add touch support for mobile
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.click();
+                }, { passive: false });
+            });
+
+            // Manejo del botón "Enviar código" para el representante legal
+            document.getElementById('legal-rep-send-code-btn').addEventListener('click', function() {
+                const phone = document.getElementById('legal-rep-phone').value;
+                if (validatePhone(phone)) {
+                    legalRepOTP = sendOTP(phone);
+                    document.getElementById('legal-rep-verification-code-group').style.display = 'block';
+                    document.getElementById('legal-rep-test-otp').textContent = `Código de prueba: ${legalRepOTP}`;
+                    this.style.display = 'none';
+                } else {
+                    alert('Por favor, ingresa un número de teléfono válido');
+                }
+            });
+
+            // Manejo de la entrada del código OTP del representante legal
+            document.querySelectorAll('.legal-rep-verification-digit').forEach((digit, index, digits) => {
+                digit.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        if (index < digits.length - 1) {
+                            digits[index + 1].focus();
+                        } else {
+                            // Verificar si el OTP está completo
+                            const enteredOTP = Array.from(digits).map(d => d.value).join('');
+                            if (enteredOTP === legalRepOTP.toString()) {
+                                legalRepPhoneVerified = true;
+                                document.getElementById('legal-rep-verification-code-group').innerHTML += `
+                                    <div class="verification-success">
+                                        <span class="status-icon">✅</span>
+                                        <span>Número verificado correctamente</span>
+                                    </div>
+                                `;
+                                // Habilitar el botón siguiente solo si la verificación es exitosa
+                                nextBtn.disabled = false;
+                            } else {
+                                // Si el código es incorrecto, mostrar error
+                                alert('Código incorrecto. Por favor, intenta nuevamente.');
+                                digits.forEach(d => d.value = ''); // Limpiar campos
+                                digits[0].focus(); // Regresar al primer campo
+                            }
+                        }
+                    }
+                });
+
+                digit.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
